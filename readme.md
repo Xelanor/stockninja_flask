@@ -1,0 +1,1 @@
+set ENV_FILE_LOCATION=./.env
