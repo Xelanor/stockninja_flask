@@ -23,7 +23,10 @@ class GetSinglePortfolioApi(Resource):
         name = body['name']
         user = body['user']
 
-        SingleItem = Portfolio.objects.get(user=user, name=name).to_json()
+        try:
+            SingleItem = Portfolio.objects.get(user=user, name=name).to_json()
+        except DoesNotExist:
+            SingleItem = json.dumps(None)
 
         return Response(SingleItem, mimetype="application/json", status=200)
 

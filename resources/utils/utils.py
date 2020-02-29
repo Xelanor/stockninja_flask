@@ -36,7 +36,7 @@ def get_single_stock_target(userId, stockName):
     Get stock target from database
     @return dict {id, name, buyTarget, sellTarget, prevBuyTarget, prevSellTarget}
     """
-    QUERY_URL = "http://127.0.0.1:5000/api/portfolio/single"
+    QUERY_URL = "http://54.196.2.46/api/portfolio/single"
     res = requests.post(QUERY_URL, json={"name": stockName, "user": userId})
     data = res.json()
 
@@ -50,7 +50,7 @@ def get_single_stock_special_data(stockName):
     Get stock details from database
     @return dict
     """
-    QUERY_URL = "http://127.0.0.1:5000/api/ticker/single"
+    QUERY_URL = "http://54.196.2.46/api/ticker/single"
     res = requests.post(QUERY_URL, json={'name': stockName})
     data = res.json()
 
