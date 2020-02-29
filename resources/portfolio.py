@@ -12,6 +12,8 @@ class GetPortfoliosApi(Resource):
     def post(self):
         body = request.get_json()
         Portfolios = Portfolio.objects(user=body['user'])
+        if len(Portfolios) == 0:
+            return Response(json.dumps([]), mimetype="application/json", status=200)
         portfolio = my_ticker_details(Portfolios)
         return Response(json.dumps(portfolio), mimetype="application/json", status=200)
 
