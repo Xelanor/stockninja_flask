@@ -31,13 +31,13 @@ def now_local_date():
     return datetime.utcnow() + timedelta(hours=3)
 
 
-def get_single_stock_target(stockName):
+def get_single_stock_target(userId, stockName):
     """
     Get stock target from database
     @return dict {id, name, buyTarget, sellTarget, prevBuyTarget, prevSellTarget}
     """
-    QUERY_URL = "http://34.67.211.44/api/stock/single/{}"
-    res = requests.get(QUERY_URL.format(stockName))
+    QUERY_URL = "http://127.0.0.1:5000/api/portfolio/single"
+    res = requests.post(QUERY_URL, json={"name": stockName, "user": userId})
     data = res.json()
 
     if data == None:
@@ -50,8 +50,8 @@ def get_single_stock_special_data(stockName):
     Get stock details from database
     @return dict
     """
-    QUERY_URL = "http://34.67.211.44/api/ticker/single-ticker"
-    res = requests.post(QUERY_URL, {'name': stockName})
+    QUERY_URL = "http://127.0.0.1:5000/api/ticker/single"
+    res = requests.post(QUERY_URL, json={'name': stockName})
     data = res.json()
 
     if data == None:
@@ -84,8 +84,6 @@ def get_current_tickers_data(stockName):
     res = requests.get(QUERY_URL.format(stockName))
     data = res.json()["quoteResponse"]["result"]
 
-    if len(stockName.split(",")) == 1:
-        return data[0]
     return data
 
 
@@ -99,6 +97,24 @@ def get_stock_historic_data(stockName, data_scope, additionalDays=30, interval="
     res = requests.get(QUERY_URL.format(
         stockName, data_scope + additionalDays, interval))
     data = res.json()["chart"]["result"][0]['indicators']["quote"][0]['close']
+
+    for i in range(len(data)):  # Handle null values
+        if data[i] == None:
+            data[i] = data[i-1]
+
+    return data
+
+
+def get_stock_intraday_data(stockName):
+    """
+    Get stocks historic data
+    Closes for stocks for X period of day. Additional Y day is needed for RSI calculation
+    @return dict
+    """
+
+    QUERY_URL = 'https://query1.finance.yahoo.com/v7/finance/chart/{}?range=1d&interval=5m&includeTimestamps=false'
+    res = requests.get(QUERY_URL.format(stockName))
+    data = res.json()["chart"]["result"][0]["indicators"]["quote"][0]["close"]
 
     for i in range(len(data)):  # Handle null values
         if data[i] == None:

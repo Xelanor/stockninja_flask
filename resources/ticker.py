@@ -5,13 +5,22 @@ from datetime import datetime, timedelta
 import json
 from mongoengine.errors import DoesNotExist
 
+from .utils.all_ticker_details import fetch_all_stocks
+from .utils.single_ticker_details import single_ticker_details
+
 
 class GetTickersApi(Resource):
     def get(self):
-        body = request.get_json()
         Tickers = Ticker.objects().to_json()
 
         return Response(Tickers, mimetype="application/json", status=200)
+
+
+class GetAllTickerDetailsApi(Resource):
+    def get(self):
+        allTickers = fetch_all_stocks()
+
+        return Response(json.dumps(allTickers), mimetype="application/json", status=200)
 
 
 class GetSingleTickerApi(Resource):
@@ -20,9 +29,21 @@ class GetSingleTickerApi(Resource):
 
         name = body['name']
 
-        SingleItem = Ticker.objects.get(user=user).to_json()
+        SingleItem = Ticker.objects.get(name=name).to_json()
 
         return Response(SingleItem, mimetype="application/json", status=200)
+
+
+class GetSingleTickerDetailsApi(Resource):
+    def post(self):
+        body = request.get_json()
+
+        user = body['user']
+        name = body['name']
+
+        SingleItem = single_ticker_details(user, name)
+
+        return Response(json.dumps(SingleItem), mimetype="application/json", status=200)
 
 
 class AddTickerItemApi(Resource):

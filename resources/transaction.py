@@ -5,15 +5,18 @@ from datetime import datetime, timedelta
 import json
 from mongoengine.errors import DoesNotExist
 
+from .utils.investment_screen_calculator import investment_screen_data
+
 
 class GetTransactionsApi(Resource):
     def post(self):
         body = request.get_json()
 
         Transactions = Transaction.objects(
-            user=body['user']).order_by('-updatedAt').to_json()
+            user=body['user']).order_by('-updatedAt')
+        investment_data = investment_screen_data(Transactions)
 
-        return Response(Transactions, mimetype="application/json", status=200)
+        return Response(json.dumps(investment_data), mimetype="application/json", status=200)
 
 
 class AddTransactionItemApi(Resource):

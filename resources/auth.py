@@ -25,8 +25,11 @@ class SignupApi(Resource):
                 user = User(**body)
                 user.save()
 
-            passCode = random.randint(100000, 999999)
-            user.update(loginPassCode=passCode,
+            notifId = body['notifId']
+
+            passCode = random.randint(1000, 9999)
+            user.update(notifId=notifId,
+                        loginPassCode=passCode,
                         loginPassCodeExpires=datetime.utcnow() + timedelta(minutes=15))
 
             telegram_bot_sendtext(str(passCode))
@@ -48,7 +51,7 @@ class InitialLoginApi(Resource):
         if not user:
             return {'error': 'Email is invalid'}, 401
 
-        passCode = random.randint(100000, 999999)
+        passCode = random.randint(1000, 9999)
         user.update(loginPassCode=passCode,
                     loginPassCodeExpires=datetime.utcnow() + timedelta(minutes=15))
 

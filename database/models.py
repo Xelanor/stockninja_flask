@@ -4,7 +4,8 @@ from .db import db
 
 class User(db.Document):
     email = db.EmailField(required=True, unique=True)
-    loginPassCode = db.IntField(min_value=100000, max_value=999999)
+    notifId = db.StringField()
+    loginPassCode = db.IntField(min_value=1000, max_value=9999)
     loginPassCodeExpires = db.DateTimeField()
     role = db.StringField(default="member")
     createdAt = db.DateTimeField()
