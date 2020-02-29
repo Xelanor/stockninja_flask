@@ -4,8 +4,20 @@ from flask_restful import Resource
 from datetime import datetime, timedelta
 import json
 from mongoengine.errors import DoesNotExist
+from mongoengine.queryset.visitor import Q
 
 from .utils.my_ticker_details import my_ticker_details
+
+
+class GetAllPortfoliosApi(Resource):
+    def get(self):
+        Portfolios = Portfolio.objects(
+            Q(buyTarget__gt=0) | Q(sellTarget__gt=0)).to_json()
+
+        if len(Portfolios) == 0:
+            return Response(json.dumps([]), mimetype="application/json", status=200)
+
+        return Response(Portfolios, mimetype="application/json", status=200)
 
 
 class GetPortfoliosApi(Resource):

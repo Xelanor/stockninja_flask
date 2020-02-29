@@ -77,3 +77,14 @@ class PassLoginApi(Resource):
             identity=payload, expires_delta=expires)
 
         return {'token': access_token}, 200
+
+
+class GetUserNotifIdApi(Resource):
+    def post(self):
+        body = request.get_json()
+        id = body['id']
+        SingleUser = User.objects.get(id=id)
+
+        notifId = SingleUser.notifId
+
+        return Response(json.dumps({"notifId": notifId}), mimetype="application/json", status=200)
