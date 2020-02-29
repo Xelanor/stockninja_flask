@@ -82,7 +82,10 @@ def get_current_tickers_data(stockName):
     """
     QUERY_URL = "https://query1.finance.yahoo.com/v7/finance/quote?symbols={}"
     res = requests.get(QUERY_URL.format(stockName))
-    data = res.json()["quoteResponse"]["result"]
+    try:
+        data = res.json()["quoteResponse"]["result"]
+    except KeyError:
+        return []
 
     return data
 

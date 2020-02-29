@@ -15,6 +15,8 @@ class GetTransactionsApi(Resource):
         Transactions = Transaction.objects(
             user=body['user']).order_by('-updatedAt')
         investment_data = investment_screen_data(Transactions)
+        if len(investment_data["stock_values"]) == 0:
+            return Response(json.dumps([]), mimetype="application/json", status=200)
 
         return Response(json.dumps(investment_data), mimetype="application/json", status=200)
 
