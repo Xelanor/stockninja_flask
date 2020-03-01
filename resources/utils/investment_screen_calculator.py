@@ -64,6 +64,7 @@ def calculate_stock_values(my_stocks, current_prices):
             total_informed_count += informed_count  # Toplam haber sayısı
 
             investment_dict = {
+                "id": str(investment['id']),
                 "amount": amount,
                 "informCount": int(informed_count),
                 "current_value": round(current_price * amount, 2),
