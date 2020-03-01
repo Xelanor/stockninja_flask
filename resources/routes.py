@@ -1,4 +1,4 @@
-from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi
+from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi, GetUsersNotifIdsApi
 from .portfolio import GetAllPortfoliosApi, GetPortfoliosApi, AddPortfolioItemApi, SetPortfolioBuyTarget, SetPortfolioSellTarget, PortfolioDeleteApi, GetSinglePortfolioApi
 from .change import GetChangesApi, AddChangeItemApi
 from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
@@ -11,6 +11,7 @@ def initialize_routes(api):
     api.add_resource(InitialLoginApi, '/api/auth/login')
     api.add_resource(PassLoginApi, '/api/auth/login/<code>')
     api.add_resource(GetUserNotifIdApi, '/api/auth/user-notifid')
+    api.add_resource(GetUsersNotifIdsApi, '/api/auth/notif-ids')
 
     api.add_resource(GetAllPortfoliosApi, '/api/portfolio/all')
     api.add_resource(GetPortfoliosApi, '/api/portfolio')

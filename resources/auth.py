@@ -88,3 +88,10 @@ class GetUserNotifIdApi(Resource):
         notifId = SingleUser.notifId
 
         return Response(json.dumps({"notifId": notifId}), mimetype="application/json", status=200)
+
+
+class GetUsersNotifIdsApi(Resource):
+    def get(self):
+        Users = User.objects().values_list('notifId').to_json()
+
+        return Response(Users, mimetype="application/json", status=200)
