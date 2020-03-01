@@ -9,12 +9,12 @@ class User(db.Document):
     loginPassCodeExpires = db.DateTimeField()
     role = db.StringField(default="member")
     createdAt = db.DateTimeField()
-    updatedAt = db.DateTimeField(default=datetime.now)
+    updatedAt = db.DateTimeField(default=datetime.utcnow)
 
     def save(self, *args, **kwargs):
         if not self.createdAt:
-            self.createdAt = datetime.now()
-        self.updatedAt = datetime.now()
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
         return super(User, self).save(*args, **kwargs)
 
 
@@ -24,12 +24,12 @@ class Portfolio(db.Document):
     buyTarget = db.FloatField(default=0)
     sellTarget = db.FloatField(default=0)
     createdAt = db.DateTimeField()
-    updatedAt = db.DateTimeField(default=datetime.now())
+    updatedAt = db.DateTimeField(default=datetime.utcnow())
 
     def save(self, *args, **kwargs):
         if not self.createdAt:
-            self.createdAt = datetime.now()
-        self.updatedAt = datetime.now()
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
         return super(Portfolio, self).save(*args, **kwargs)
 
 
@@ -40,12 +40,12 @@ class Change(db.Document):
     same = db.IntField()
     bist = db.IntField()
     createdAt = db.DateTimeField()
-    updatedAt = db.DateTimeField(default=datetime.now)
+    updatedAt = db.DateTimeField(default=datetime.utcnow)
 
     def save(self, *args, **kwargs):
         if not self.createdAt:
-            self.createdAt = datetime.now()
-        self.updatedAt = datetime.now()
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
         return super(Change, self).save(*args, **kwargs)
 
 
@@ -56,12 +56,12 @@ class Ticker(db.Document):
     fk = db.FloatField()
     pd_dd = db.FloatField()
     createdAt = db.DateTimeField()
-    updatedAt = db.DateTimeField(default=datetime.now)
+    updatedAt = db.DateTimeField(default=datetime.utcnow)
 
     def save(self, *args, **kwargs):
         if not self.createdAt:
-            self.createdAt = datetime.now()
-        self.updatedAt = datetime.now()
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
         return super(Ticker, self).save(*args, **kwargs)
 
 
@@ -73,10 +73,28 @@ class Transaction(db.Document):
     kind = db.StringField()
     informCount = db.IntField()
     createdAt = db.DateTimeField()
-    updatedAt = db.DateTimeField(default=datetime.now)
+    updatedAt = db.DateTimeField(default=datetime.utcnow)
 
     def save(self, *args, **kwargs):
         if not self.createdAt:
-            self.createdAt = datetime.now()
-        self.updatedAt = datetime.now()
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
         return super(Transaction, self).save(*args, **kwargs)
+
+
+class Notification(db.Document):
+    receiver = db.LazyReferenceField(
+        'User', reverse_delete_rule=2, required=True)
+    title = db.StringField()
+    subtitle = db.StringField()
+    viewed = db.BooleanField(default=False)
+    information = db.DictField(default={})
+    category = db.StringField()
+    createdAt = db.DateTimeField()
+    updatedAt = db.DateTimeField(default=datetime.utcnow)
+
+    def save(self, *args, **kwargs):
+        if not self.createdAt:
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
+        return super(Notification, self).save(*args, **kwargs)

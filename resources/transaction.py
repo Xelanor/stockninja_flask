@@ -8,6 +8,16 @@ from mongoengine.errors import DoesNotExist
 from .utils.investment_screen_calculator import investment_screen_data
 
 
+class GetAllTransactionsApi(Resource):
+    def get(self):
+        Transactions = Transaction.objects(informCount__lte=3).to_json()
+
+        if len(Transactions) == 0:
+            return Response(json.dumps([]), mimetype="application/json", status=200)
+
+        return Response(Transactions, mimetype="application/json", status=200)
+
+
 class GetTransactionsApi(Resource):
     def post(self):
         body = request.get_json()

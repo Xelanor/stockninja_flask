@@ -2,7 +2,8 @@ from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi
 from .portfolio import GetAllPortfoliosApi, GetPortfoliosApi, AddPortfolioItemApi, SetPortfolioBuyTarget, SetPortfolioSellTarget, PortfolioDeleteApi, GetSinglePortfolioApi
 from .change import GetChangesApi, AddChangeItemApi
 from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
-from .transaction import GetTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi
+from .transaction import GetAllTransactionsApi, GetTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi
+from .notifications import GetNotificationsApi, AddNotificationItemApi
 
 
 def initialize_routes(api):
@@ -30,7 +31,11 @@ def initialize_routes(api):
     api.add_resource(AddTickerScrapDataApi, '/api/ticker/scrap')
     api.add_resource(TickerSearchApi, '/api/ticker/search')
 
+    api.add_resource(GetAllTransactionsApi, '/api/transaction/all')
     api.add_resource(GetTransactionsApi, '/api/transaction')
     api.add_resource(AddTransactionItemApi, '/api/transaction/add')
     api.add_resource(DeleteTransactionItemApi, '/api/transaction/delete')
     api.add_resource(SetInformTransactionItemApi, '/api/transaction/inform')
+
+    api.add_resource(GetNotificationsApi, '/api/notification')
+    api.add_resource(AddNotificationItemApi, '/api/notification/add')
