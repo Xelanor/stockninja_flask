@@ -24,3 +24,12 @@ class AddNotificationItemApi(Resource):
         notification.save()
 
         return {'token': str("Done")}, 200
+
+
+class NotificationViewedApi(Resource):
+    def post(self):
+        body = request.get_json()
+
+        Notification.objects.get(id=body['id']).update(set__viewed=True)
+
+        return {'token': str("Done")}, 200

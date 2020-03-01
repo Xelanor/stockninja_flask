@@ -3,7 +3,7 @@ from .portfolio import GetAllPortfoliosApi, GetPortfoliosApi, AddPortfolioItemAp
 from .change import GetChangesApi, AddChangeItemApi
 from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
 from .transaction import GetAllTransactionsApi, GetTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi
-from .notifications import GetNotificationsApi, AddNotificationItemApi
+from .notifications import GetNotificationsApi, AddNotificationItemApi, NotificationViewedApi
 
 
 def initialize_routes(api):
@@ -39,3 +39,4 @@ def initialize_routes(api):
 
     api.add_resource(GetNotificationsApi, '/api/notification')
     api.add_resource(AddNotificationItemApi, '/api/notification/add')
+    api.add_resource(NotificationViewedApi, '/api/notification/viewed')
