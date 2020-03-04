@@ -39,6 +39,6 @@ class DeleteNotificationApi(Resource):
     def post(self):
         body = request.get_json()
 
-        Transaction.objects.get(id=body['id']).delete()
+        Notification.objects.get(id=body['id']).delete()
 
         return {'token': str("Done")}, 200
