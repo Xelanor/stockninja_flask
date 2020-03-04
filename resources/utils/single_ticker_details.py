@@ -49,7 +49,7 @@ class StockDetails:
             "ninja_index": self.ninja_values,
             "ninja_index_s": self.ninja_values_s,
             "triple_index": self.triple_index_values,
-            "closes": self.historic_data[-self.data_scope:],
+            "closes": self.historic_data,
             "news": self.all_news,
             "fk": special_data['fk'] if 'fk' in special_data else 0,
             "pd_dd": special_data['pd_dd'] if 'pd_dd' in special_data else 0,
