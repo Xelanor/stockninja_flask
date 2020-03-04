@@ -259,7 +259,7 @@ def calculate_ninja_index_s(historic_data, data_scope):
 
 
 def calculate_triple_index(historic_data, data_scope):
-    first_data = historic_data[-1 * (data_scope + 30):]
+    first_data = historic_data[-1 * (data_scope + 21):]
     second_data = historic_data[-1 * (data_scope + 14):]
     third_data = historic_data[-1 * (data_scope + 7):]
 
@@ -268,7 +268,7 @@ def calculate_triple_index(historic_data, data_scope):
 
     for i in range(0, data_scope):
         try:
-            triple_index_values["first_list"].append(mean(first_data[i:i+30]))
+            triple_index_values["first_list"].append(mean(first_data[i:i+21]))
             triple_index_values["second_list"].append(
                 mean(second_data[i:i+14]))
             triple_index_values["third_list"].append(mean(third_data[i:i+7]))
