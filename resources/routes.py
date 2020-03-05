@@ -1,7 +1,7 @@
 from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi, GetUsersNotifIdsApi
 from .portfolio import GetAllPortfoliosApi, GetPortfoliosApi, AddPortfolioItemApi, SetPortfolioBuyTarget, SetPortfolioSellTarget, PortfolioDeleteApi, GetSinglePortfolioApi
 from .change import GetChangesApi, AddChangeItemApi
-from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
+from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetAllCurrencyDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
 from .transaction import GetAllTransactionsApi, GetTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi
 from .notifications import GetNotificationsApi, AddNotificationItemApi, NotificationViewedApi, DeleteNotificationApi
 
@@ -26,6 +26,7 @@ def initialize_routes(api):
 
     api.add_resource(GetTickersApi, '/api/ticker')
     api.add_resource(GetAllTickerDetailsApi, '/api/ticker/all')
+    api.add_resource(GetAllCurrencyDetailsApi, '/api/ticker/currencies')
     api.add_resource(GetSingleTickerApi, '/api/ticker/single')
     api.add_resource(GetSingleTickerDetailsApi, '/api/ticker/single-details')
     api.add_resource(AddTickerItemApi, '/api/ticker/add')

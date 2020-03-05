@@ -6,6 +6,7 @@ import json
 from mongoengine.errors import DoesNotExist
 
 from .utils.all_ticker_details import fetch_all_stocks
+from .utils.all_currency_details import fetch_all_currencies
 from .utils.single_ticker_details import single_ticker_details
 
 
@@ -23,13 +24,23 @@ class GetAllTickerDetailsApi(Resource):
         return Response(json.dumps(allTickers), mimetype="application/json", status=200)
 
 
+class GetAllCurrencyDetailsApi(Resource):
+    def get(self):
+        allCurrencies = fetch_all_currencies()
+
+        return Response(json.dumps(allCurrencies), mimetype="application/json", status=200)
+
+
 class GetSingleTickerApi(Resource):
     def post(self):
         body = request.get_json()
 
         name = body['name']
 
-        SingleItem = Ticker.objects.get(name=name).to_json()
+        try:
+            SingleItem = Ticker.objects.get(name=name).to_json()
+        except DoesNotExist:
+            SingleItem = json.dumps(None)
 
         return Response(SingleItem, mimetype="application/json", status=200)
 
