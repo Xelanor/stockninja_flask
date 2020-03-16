@@ -58,3 +58,48 @@ class SetInformTransactionItemApi(Resource):
             set__informCount=body['informCount'])
 
         return {'token': str("Done")}, 200
+
+
+class SellTransactionItemApi(Resource):
+    def post(self):
+        body = request.get_json()
+
+        transaction = Transaction(user=body['user'], name=body["name"], price=body["price"],
+                                  amount=body["amount"], kind=body["kind"], informCount=0)
+        transaction.save()
+
+        transaction = Transaction.objects.get(id=body['id'])
+        transaction_amount = transaction.amount
+
+        transaction.update(set__amount=transaction_amount - body['amount'])
+
+        return {'token': str("Done")}, 200
+
+
+class GetTracingTransactionsApi(Resource):
+    def get(self):
+        Transactions = Transaction.objects(traced__ne=True).to_json()
+
+        if len(Transactions) == 0:
+            return Response(json.dumps([]), mimetype="application/json", status=200)
+
+        return Response(Transactions, mimetype="application/json", status=200)
+
+
+class SetCurrentPriceTransactionItemApi(Resource):
+    def post(self):
+        body = request.get_json()
+
+        Transaction.objects.get(id=body['id']).update(
+            set__currentPrice=body['current_price'])
+
+        return {'token': str("Done")}, 200
+
+
+class SetTracedTransactionItemApi(Resource):
+    def post(self):
+        body = request.get_json()
+
+        Transaction.objects.get(id=body['id']).update(set__traced=True)
+
+        return {'token': str("Done")}, 200

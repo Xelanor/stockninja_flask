@@ -2,7 +2,7 @@ from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi, G
 from .portfolio import GetAllPortfoliosApi, GetPortfoliosApi, AddPortfolioItemApi, SetPortfolioBuyTarget, SetPortfolioSellTarget, PortfolioDeleteApi, GetSinglePortfolioApi
 from .change import GetChangesApi, AddChangeItemApi
 from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetAllCurrencyDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
-from .transaction import GetAllTransactionsApi, GetTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi
+from .transaction import GetAllTransactionsApi, GetTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi, SellTransactionItemApi, GetTracingTransactionsApi, SetCurrentPriceTransactionItemApi, SetTracedTransactionItemApi
 from .notifications import GetNotificationsApi, AddNotificationItemApi, NotificationViewedApi, DeleteNotificationApi
 
 
@@ -38,6 +38,12 @@ def initialize_routes(api):
     api.add_resource(AddTransactionItemApi, '/api/transaction/add')
     api.add_resource(DeleteTransactionItemApi, '/api/transaction/delete')
     api.add_resource(SetInformTransactionItemApi, '/api/transaction/inform')
+    api.add_resource(SellTransactionItemApi, '/api/transaction/sell')
+    api.add_resource(GetTracingTransactionsApi, '/api/transaction/tracing')
+    api.add_resource(SetCurrentPriceTransactionItemApi,
+                     '/api/transaction/set-current-price')
+    api.add_resource(SetTracedTransactionItemApi,
+                     '/api/transaction/set-traced')
 
     api.add_resource(GetNotificationsApi, '/api/notification')
     api.add_resource(AddNotificationItemApi, '/api/notification/add')

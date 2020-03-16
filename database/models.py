@@ -69,6 +69,8 @@ class Transaction(db.Document):
     user = db.LazyReferenceField('User', reverse_delete_rule=2, required=True)
     name = db.StringField(required=True)
     price = db.FloatField()
+    currentPrice = db.FloatField()
+    traced = db.BooleanField(default=False)
     amount = db.FloatField()
     kind = db.StringField()
     informCount = db.IntField()
