@@ -70,6 +70,7 @@ class Transaction(db.Document):
     name = db.StringField(required=True)
     price = db.FloatField()
     currentPrice = db.FloatField()
+    profit = db.FloatField()
     traced = db.BooleanField(default=False)
     amount = db.FloatField()
     kind = db.StringField()

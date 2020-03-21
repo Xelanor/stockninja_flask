@@ -65,7 +65,7 @@ class SellTransactionItemApi(Resource):
         body = request.get_json()
 
         transaction = Transaction(user=body['user'], name=body["name"], price=body["price"],
-                                  amount=body["amount"], kind=body["kind"], informCount=0)
+                                  amount=body["amount"], kind=body["kind"], profit=body["profit"], informCount=0)
         transaction.save()
 
         transaction = Transaction.objects.get(id=body['id'])
