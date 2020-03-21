@@ -92,10 +92,13 @@ def calculate_stock_values(my_stocks, current_prices):
 def investment_screen_data(investments):
     stock_data = defaultdict(list)
     stock_names = []
+    total_profit = 0
 
     for investment in investments:
         stockName = investment['name']
         if not investment['kind'] == "buy":
+            if 'profit' in investment:
+                total_profit += investment['profit']
             continue
 
         stock_data[stockName].append(investment)
@@ -113,6 +116,7 @@ def investment_screen_data(investments):
     result_dict = {
         "total_equity": round(total_equity, 2),
         "potential_profit_loss": round(potential_profit_loss, 2),
+        "total_profit": round(total_profit, 2),
         "stock_values": all_stocks_transactions_data
     }
 
