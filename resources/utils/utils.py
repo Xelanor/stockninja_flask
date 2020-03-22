@@ -115,7 +115,7 @@ def get_stock_intraday_data(stockName):
     @return dict
     """
 
-    QUERY_URL = 'https://query1.finance.yahoo.com/v7/finance/chart/{}?range=1d&interval=5m&includeTimestamps=false'
+    QUERY_URL = 'https://query1.finance.yahoo.com/v7/finance/chart/{}?range=2d&interval=5m&includeTimestamps=false'
     res = requests.get(QUERY_URL.format(stockName))
     data = res.json()["chart"]["result"][0]["indicators"]["quote"][0]["close"]
 
