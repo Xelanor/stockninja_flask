@@ -22,7 +22,7 @@ def calculate_total_current_equity(my_stocks, current_prices):
         current_price = float(current_prices[stockName])
 
         for investment in investments:
-            total += current_price * float(investment['amount'])
+            total += current_price * float(investment['remaining'])
 
     return total
 
@@ -33,8 +33,8 @@ def calculate_purchased_value(my_stocks):
     for stockName, investments in my_stocks.items():
         for investment in investments:
             purchased_price = float(investment['price'])
-            amount = float(investment['amount'])
-            total += purchased_price * amount
+            remaining = float(investment['remaining'])
+            total += purchased_price * remaining
 
     return total
 
@@ -45,7 +45,7 @@ def calculate_stock_values(my_stocks, current_prices):
     for stockName, investments in my_stocks.items():
         total_current_value = 0
         total_purchased_value = 0
-        total_purchased_amount = 0
+        total_purchased_remaining = 0
         total_informed_count = 0
         result[stockName]["transactions"] = []
 
@@ -53,21 +53,21 @@ def calculate_stock_values(my_stocks, current_prices):
         current_price = float(current_prices[stockName])
         for investment in investments:
             purchased_price = float(investment['price'])  # Alış fiyatı
-            amount = float(investment['amount'])  # Alınan miktar
+            remaining = float(investment['remaining'])  # Alınan miktar
             informed_count = float(investment['informCount'])  # Alınan miktar
-            current_value = current_price * amount  # Güncel toplam
-            purchased_value = purchased_price * amount  # Alış toplam
+            current_value = current_price * remaining  # Güncel toplam
+            purchased_value = purchased_price * remaining  # Alış toplam
 
             total_current_value += current_value
             total_purchased_value += purchased_value
-            total_purchased_amount += amount  # Toplam adet
+            total_purchased_remaining += remaining  # Toplam adet
             total_informed_count += informed_count  # Toplam haber sayısı
 
             investment_dict = {
                 "id": str(investment['id']),
-                "amount": amount,
+                "remaining": remaining,
                 "informCount": int(informed_count),
-                "current_value": round(current_price * amount, 2),
+                "current_value": round(current_price * remaining, 2),
                 "date": str(investment['createdAt']),
                 "profit_loss": round(current_value - purchased_value, 2),
                 "purchased_price": purchased_price,
@@ -77,8 +77,8 @@ def calculate_stock_values(my_stocks, current_prices):
             result[stockName]["transactions"].append(investment_dict)
 
         result[stockName]["unit_cost"] = round(
-            total_purchased_value / total_purchased_amount, 2)
-        result[stockName]["amount"] = round(total_purchased_amount)
+            total_purchased_value / total_purchased_remaining, 2)
+        result[stockName]["remaining"] = round(total_purchased_remaining)
         result[stockName]["current_value"] = round(total_current_value, 2)
         result[stockName]["profit_loss"] = round(
             total_current_value - total_purchased_value, 2)
@@ -101,6 +101,9 @@ def investment_screen_data(investments):
                 total_profit += investment['profit']
             continue
 
+        if investment['remaining'] <= 0:
+            continue
+
         stock_data[stockName].append(investment)
         stock_names.append(stockName)
 
@@ -109,7 +112,6 @@ def investment_screen_data(investments):
     total_equity = calculate_total_current_equity(stock_data, current_prices)
     purchased_values = calculate_purchased_value(stock_data)
     potential_profit_loss = total_equity - purchased_values
-
     all_stocks_transactions_data = calculate_stock_values(
         stock_data, current_prices)
 

@@ -6,6 +6,7 @@ import json
 from mongoengine.errors import DoesNotExist
 
 from .utils.investment_screen_calculator import investment_screen_data
+from .utils.all_transactions_screen import mixed_investment_data
 
 
 class GetAllTransactionsApi(Resource):
@@ -25,7 +26,21 @@ class GetTransactionsApi(Resource):
         Transactions = Transaction.objects(
             user=body['user']).order_by('-updatedAt')
         investment_data = investment_screen_data(Transactions)
-        if len(investment_data["stock_values"]) == 0:
+
+        # if len(investment_data["stock_values"]) == 0:
+        #     return Response(json.dumps([]), mimetype="application/json", status=200)
+
+        return Response(json.dumps(investment_data), mimetype="application/json", status=200)
+
+
+class GetMixedTransactionsApi(Resource):
+    def post(self):
+        body = request.get_json()
+
+        Transactions = Transaction.objects(
+            user=body['user']).order_by('-createdAt')
+        investment_data = mixed_investment_data(Transactions)
+        if len(investment_data['result']) == 0:
             return Response(json.dumps([]), mimetype="application/json", status=200)
 
         return Response(json.dumps(investment_data), mimetype="application/json", status=200)
@@ -69,9 +84,10 @@ class SellTransactionItemApi(Resource):
         transaction.save()
 
         transaction = Transaction.objects.get(id=body['id'])
-        transaction_amount = transaction.amount
+        transaction_remaining = transaction.remaining
 
-        transaction.update(set__amount=transaction_amount - body['amount'])
+        transaction.update(
+            set__remaining=transaction_remaining - body['amount'])
 
         return {'token': str("Done")}, 200
 

@@ -73,6 +73,7 @@ class Transaction(db.Document):
     profit = db.FloatField()
     traced = db.BooleanField(default=False)
     amount = db.FloatField()
+    remaining = db.FloatField()
     kind = db.StringField()
     informCount = db.IntField()
     createdAt = db.DateTimeField()

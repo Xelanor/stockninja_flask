@@ -50,7 +50,7 @@ class StockDetails:
             "ninja_index_s": self.ninja_values_s,
             "triple_index": self.triple_index_values,
             "closes": self.historic_data,
-            "news": self.all_news,
+            # "news": self.all_news,
             "fk": special_data['fk'] if 'fk' in special_data else 0,
             "pd_dd": special_data['pd_dd'] if 'pd_dd' in special_data else 0,
         }
@@ -82,7 +82,7 @@ class StockDetails:
             self.rsi_values = calculate_rsi_index(
                 self.historic_data, data_scope)
 
-        self.all_news = get_stock_news(stockName)
+        # self.all_news = get_stock_news(stockName)
         self.env_values = calculate_env_index(
             self.historic_data, data_scope)
         self.ninja_values = calculate_ninja_index(
