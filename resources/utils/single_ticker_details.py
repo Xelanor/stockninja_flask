@@ -50,6 +50,7 @@ class StockDetails:
             "ninja_index_s": self.ninja_values_s,
             "triple_index": self.triple_index_values,
             "closes": self.historic_data,
+            "williams": self.williams_values,
             # "news": self.all_news,
             "fk": special_data['fk'] if 'fk' in special_data else 0,
             "pd_dd": special_data['pd_dd'] if 'pd_dd' in special_data else 0,
@@ -90,6 +91,8 @@ class StockDetails:
         self.ninja_values_s = calculate_ninja_index_s(
             self.historic_data, data_scope)
         self.triple_index_values = calculate_triple_index(
+            self.historic_data, data_scope)
+        self.williams_values = calculate_williams_index(
             self.historic_data, data_scope)
         self.stock_details = self.combine_data_target()
 

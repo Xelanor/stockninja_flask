@@ -279,6 +279,26 @@ def calculate_triple_index(historic_data, data_scope):
     return triple_index_values
 
 
+def calculate_williams_index():
+    """
+    Calculation of Williams index
+    """
+    williams_values = []
+    historic_data = closes[-1 * (data_scope + 13):]
+
+    for i in range(0, data_scope):
+        closes = historic_data[i:i+13]
+        min_value = min(closes)
+        max_value = max(closes)
+
+        williams_value = (
+            max_value - closes[-1]) / (max_value - min_value) * -100
+
+        williams_values.append(williams_value)
+
+    return williams_values
+
+
 def get_prices(stock_names):
     prices = {}
 
