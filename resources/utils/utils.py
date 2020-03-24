@@ -284,7 +284,7 @@ def calculate_williams_index(historic_data, data_scope):
     Calculation of Williams index
     """
     williams_values = []
-    historic_data = closes[-1 * (data_scope + 13):]
+    historic_data = historic_data[-1 * (data_scope + 13):]
 
     for i in range(0, data_scope):
         closes = historic_data[i:i+13]
