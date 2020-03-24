@@ -279,7 +279,7 @@ def calculate_triple_index(historic_data, data_scope):
     return triple_index_values
 
 
-def calculate_williams_index():
+def calculate_williams_index(historic_data, data_scope):
     """
     Calculation of Williams index
     """
