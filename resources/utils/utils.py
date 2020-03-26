@@ -299,6 +299,27 @@ def calculate_williams_index(historic_data, data_scope):
     return williams_values
 
 
+def calculate_aroon_index(historic_data, data_scope):
+    """
+    Calculation of Aroon index
+    """
+    aroon_index_values = {"upper": [], "lower": []}
+    historic_data = historic_data[-1 * (data_scope + 20):]
+
+    for i in range(0, data_scope):
+        closes = historic_data[i:i+21]
+        min_value = min(closes)
+        max_value = max(closes)
+
+        upper_value = closes[::-1].index(max_value)
+        lower_value = closes[::-1].index(min_value)
+
+        aroon_index_values['upper'].append(upper_value)
+        aroon_index_values['lower'].append(lower_value)
+
+    return aroon_index_values
+
+
 def get_prices(stock_names):
     prices = {}
 
