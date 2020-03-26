@@ -304,15 +304,15 @@ def calculate_aroon_index(historic_data, data_scope):
     Calculation of Aroon index
     """
     aroon_index_values = {"upper": [], "lower": []}
-    historic_data = historic_data[-1 * (data_scope + 20):]
+    historic_data = historic_data[-1 * (data_scope + 13):]
 
     for i in range(0, data_scope):
-        closes = historic_data[i:i+21]
+        closes = historic_data[i:i+14]
         min_value = min(closes)
         max_value = max(closes)
 
-        upper_value = (21 - closes[::-1].index(max_value)) / 21 * 100
-        lower_value = (21 - closes[::-1].index(min_value)) / 21 * 100
+        upper_value = (14 - closes[::-1].index(max_value)) / 14 * 100
+        lower_value = (14 - closes[::-1].index(min_value)) / 14 * 100
 
         aroon_index_values['upper'].append(upper_value)
         aroon_index_values['lower'].append(lower_value)
