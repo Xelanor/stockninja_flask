@@ -311,8 +311,8 @@ def calculate_aroon_index(historic_data, data_scope):
         min_value = min(closes)
         max_value = max(closes)
 
-        upper_value = closes[::-1].index(max_value)
-        lower_value = closes[::-1].index(min_value)
+        upper_value = (21 - closes[::-1].index(max_value)) / 21 * 100
+        lower_value = (21 - closes[::-1].index(min_value)) / 21 * 100
 
         aroon_index_values['upper'].append(upper_value)
         aroon_index_values['lower'].append(lower_value)
