@@ -95,7 +95,7 @@ class StockDetails:
             self.historic_data, data_scope)
         self.williams_values = calculate_williams_index(
             self.historic_data, data_scope)
-        self.aroon_values = calculate_williams_index(
+        self.aroon_values = calculate_aroon_index(
             self.historic_data, data_scope)
         self.stock_details = self.combine_data_target()
 
