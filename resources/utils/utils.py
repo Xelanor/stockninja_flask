@@ -191,7 +191,7 @@ def calculate_rsi_index(historic_data, data_scope):
             RS = 100
 
         RSI = (100 - 100 / (1 + RS))
-        rsi_values.append(RSI)
+        rsi_values.append(round(RSI, 2))
 
     return rsi_values
 
@@ -227,12 +227,12 @@ def calculate_ninja_index(historic_data, data_scope):
                        historic_data[i]) / historic_data[i]
 
             if current == 0:
-                ninja_values.append(prev)
+                ninja_values.append(round(prev, 2))
             elif (current > 0 and prev > 0) or (current < 0 and prev < 0):
                 current += prev
-                ninja_values.append(current)
+                ninja_values.append(round(current, 2))
             else:
-                ninja_values.append(current)
+                ninja_values.append(round(current, 2))
             prev = current
         except:
             pass
@@ -271,7 +271,8 @@ def calculate_triple_index(historic_data, data_scope):
             triple_index_values["first_list"].append(mean(first_data[i:i+21]))
             triple_index_values["second_list"].append(
                 mean(second_data[i:i+14]))
-            triple_index_values["third_list"].append(mean(third_data[i:i+7]))
+            triple_index_values["third_list"].append(
+                round(mean(third_data[i:i+7]), 2))
         except Exception as ex:
             print(ex)
             pass
@@ -294,7 +295,7 @@ def calculate_williams_index(historic_data, data_scope):
         williams_value = (
             max_value - closes[-1]) / (max_value - min_value) * -100
 
-        williams_values.append(williams_value)
+        williams_values.append(round(williams_value, 2))
 
     return williams_values
 
@@ -314,8 +315,8 @@ def calculate_aroon_index(historic_data, data_scope):
         upper_value = (14 - closes[::-1].index(max_value)) / 14 * 100
         lower_value = (14 - closes[::-1].index(min_value)) / 14 * 100
 
-        aroon_index_values['upper'].append(upper_value)
-        aroon_index_values['lower'].append(lower_value)
+        aroon_index_values['upper'].append(round(upper_value, 2))
+        aroon_index_values['lower'].append(round(lower_value, 2))
 
     return aroon_index_values
 
