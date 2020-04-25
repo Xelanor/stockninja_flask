@@ -102,3 +102,17 @@ class Notification(db.Document):
             self.createdAt = datetime.utcnow()
         self.updatedAt = datetime.utcnow()
         return super(Notification, self).save(*args, **kwargs)
+
+
+class Simulation(db.Document):
+    user = db.LazyReferenceField('User', reverse_delete_rule=2, required=True)
+    settings = db.DictField(default={})
+    result = db.DictField(default={})
+    createdAt = db.DateTimeField()
+    updatedAt = db.DateTimeField(default=datetime.utcnow)
+
+    def save(self, *args, **kwargs):
+        if not self.createdAt:
+            self.createdAt = datetime.utcnow()
+        self.updatedAt = datetime.utcnow()
+        return super(Simulation, self).save(*args, **kwargs)

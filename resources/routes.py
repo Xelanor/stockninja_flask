@@ -4,6 +4,7 @@ from .change import GetChangesApi, AddChangeItemApi
 from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetAllCurrencyDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
 from .transaction import GetAllTransactionsApi, GetTransactionsApi, GetMixedTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi, SellTransactionItemApi, GetTracingTransactionsApi, SetCurrentPriceTransactionItemApi, SetTracedTransactionItemApi
 from .notifications import GetNotificationsApi, AddNotificationItemApi, NotificationViewedApi, DeleteNotificationApi
+from .simulation import SimulationResultApi, AddSimulationApi
 
 
 def initialize_routes(api):
@@ -50,3 +51,6 @@ def initialize_routes(api):
     api.add_resource(AddNotificationItemApi, '/api/notification/add')
     api.add_resource(NotificationViewedApi, '/api/notification/viewed')
     api.add_resource(DeleteNotificationApi, '/api/notification/delete')
+
+    api.add_resource(SimulationResultApi, '/api/simulation')
+    api.add_resource(AddSimulationApi, '/api/simulation/add')
