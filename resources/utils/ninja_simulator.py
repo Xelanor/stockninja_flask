@@ -13,7 +13,7 @@ from .utils import epoch_to_date, calculate_williams_index, calculate_triple_ind
 
 
 class Simulation:
-    def __init__(self, stock_name, money, buy_conditions):
+    def __init__(self, stock_name, money, buy_conditions, sell_conditions):
         self.today = ""
         self.stock_name = stock_name
         self.initial_money = money
@@ -22,6 +22,7 @@ class Simulation:
         self.transaction_log = []
         self.moneys = []
         self.buy_conditions = buy_conditions
+        self.sell_conditions = sell_conditions
 
     def get_prices(self):
         values = {"prices": [], "dates": []}
@@ -75,14 +76,14 @@ class Simulation:
 
         return days, first_event
 
-    def price_condition(self):
-        price_enabled = self.buy_conditions['price']['checked']
+    def price_condition(self, conditions):
+        price_enabled = conditions['price']['checked']
         if not price_enabled:
             return True  # Buy
 
-        price_day = self.buy_conditions['price']['priceDay']
-        price_percentage = self.buy_conditions['price']['pricePercentage']
-        price_condition = self.buy_conditions['price']['priceCondition']
+        price_day = conditions['price']['priceDay']
+        price_percentage = conditions['price']['pricePercentage']
+        price_condition = conditions['price']['priceCondition']
 
         if price_condition == "Yüksek":
             if self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (price_percentage + 100) / 100:
@@ -196,7 +197,7 @@ class Simulation:
         return True
 
     def buy_condition(self):
-        price_option = self.price_condition()
+        price_option = self.price_condition(self.buy_conditions)
         if not price_option:
             return False
 
@@ -207,6 +208,10 @@ class Simulation:
         return True
 
     def sell_condition(self):
+        price_option = self.price_condition(self.sell_conditions)
+        if not price_option:
+            return False
+
         return True
 
     def simulation(self):
@@ -249,10 +254,10 @@ class Simulation:
         return self.moneys
 
 
-def run(buy_conditions):
+def run(buy_conditions, sell_conditions, stocks):
     all_ticker_values = []
-    for ticker in ["TUPRS.IS"]:
-        sim = Simulation(ticker, 10000, buy_conditions)
+    for ticker in stocks:
+        sim = Simulation(ticker, 10000, buy_conditions, sell_conditions)
         values = sim.simulation()
         all_ticker_values.append(values)
 
