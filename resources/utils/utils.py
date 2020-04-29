@@ -36,7 +36,7 @@ def get_single_stock_target(userId, stockName):
     Get stock target from database
     @return dict {id, name, buyTarget, sellTarget, prevBuyTarget, prevSellTarget}
     """
-    QUERY_URL = "http://54.196.2.46/api/portfolio/single"
+    QUERY_URL = "http://3.80.155.110/api/portfolio/single"
     res = requests.post(QUERY_URL, json={"name": stockName, "user": userId})
     data = res.json()
 
@@ -50,7 +50,7 @@ def get_single_stock_special_data(stockName):
     Get stock details from database
     @return dict
     """
-    QUERY_URL = "http://54.196.2.46/api/ticker/single"
+    QUERY_URL = "http://3.80.155.110/api/ticker/single"
     res = requests.post(QUERY_URL, json={'name': stockName})
     data = res.json()
 
@@ -293,7 +293,7 @@ def calculate_williams_index(historic_data, data_scope):
         max_value = max(closes)
 
         williams_value = (
-            max_value - closes[-1]) / (max_value - min_value) * -100
+            max_value - closes[-1]) / (max_value - min_value + 1) * -100
 
         williams_values.append(round(williams_value, 2))
 
