@@ -196,6 +196,45 @@ class Simulation:
 
         return True
 
+    def rsi_condition(self, conditions):
+        rsi_enabled = conditions['rsi']['checked']
+        if not rsi_enabled:
+            return True  # Buy
+
+        rsi_first = conditions['rsi']['first_compare']
+        rsi_second = conditions['rsi']['second_compare']
+        rsi_third = conditions['rsi']['third_compare']
+        rsi_value = conditions['rsi']['rsi_value']
+        rsi_compare = conditions['rsi']['rsi_compare']
+
+        if rsi_first == ">":
+            if not (self.rsi_values[-1] > self.rsi_values[-2]):
+                return False
+        elif rsi_first == "<":
+            if not (self.rsi_values[-1] < self.rsi_values[-2]):
+                return False
+        if rsi_second == ">":
+            if not (self.rsi_values[-2] > self.rsi_values[-3]):
+                return False
+        elif rsi_second == "<":
+            if not (self.rsi_values[-2] < self.rsi_values[-3]):
+                return False
+        if rsi_third == ">":
+            if not (self.rsi_values[-3] > self.rsi_values[-4]):
+                return False
+        elif rsi_third == "<":
+            if not (self.rsi_values[-3] < self.rsi_values[-4]):
+                return False
+
+        if rsi_compare == ">":
+            if not (self.rsi_values[-1] > rsi_value):
+                return False
+        elif rsi_compare == "<":
+            if not (self.rsi_values[-1] > rsi_value):
+                return False
+
+        return True
+
     def buy_condition(self):
         price_option = self.price_condition(self.buy_conditions)
         if not price_option:
@@ -205,11 +244,19 @@ class Simulation:
         if not triple_option:
             return False
 
+        rsi_option = self.rsi_condition(self.buy_conditions)
+        if not rsi_option:
+            return False
+
         return True
 
     def sell_condition(self):
         price_option = self.price_condition(self.sell_conditions)
         if not price_option:
+            return False
+
+        rsi_option = self.rsi_condition(self.sell_conditions)
+        if not rsi_option:
             return False
 
         return True
@@ -230,6 +277,7 @@ class Simulation:
                 (self.current_price * self.portfolio[self.stock_name])
             # Her gün sahip olduğum para miktarı
             self.moneys.append(current_money)
+            self.rsi_values = calculate_rsi_index(self.prices_until_today, 5)
 
             if self.money > 0:
                 if not self.buy_condition():
