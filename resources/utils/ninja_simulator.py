@@ -178,7 +178,7 @@ class Simulation:
             c_value = long_
 
         rate_A = (a_value - b_value) / b_value * 100
-        rate_B = (b_value - c_value) / b_value * 100
+        rate_B = (b_value - c_value) / c_value * 100
 
         if triple_first_compare == ">":
             if not (rate_A > 0 and rate_A < triple_first_perc):
@@ -230,7 +230,7 @@ class Simulation:
             if not (self.rsi_values[-1] > rsi_value):
                 return False
         elif rsi_compare == "<":
-            if not (self.rsi_values[-1] > rsi_value):
+            if not (self.rsi_values[-1] < rsi_value):
                 return False
 
         return True
