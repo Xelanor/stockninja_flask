@@ -235,6 +235,22 @@ class Simulation:
 
         return True
 
+    def sell_trace_condition(self):
+        trace_enabled = self.sell_conditions['trace']['checked']
+        if not trace_enabled:
+            return True  # Sell
+
+        if self.current_price > self.sell_tracing_price:
+            self.sell_tracing_price = self.current_price
+
+        trace_value = self.sell_conditions['trace']['value']
+
+        if not (self.current_price < self.sell_tracing_price * (100 - trace_value) / 100):
+            return False
+
+        self.sell_tracing_price = 0
+        return True
+
     def buy_condition(self):
         price_option = self.price_condition(self.buy_conditions)
         if not price_option:
@@ -259,6 +275,10 @@ class Simulation:
         if not rsi_option:
             return False
 
+        trace_option = self.sell_trace_condition()
+        if not trace_option:
+            return False
+
         return True
 
     def simulation(self):
@@ -266,6 +286,7 @@ class Simulation:
         calculation_prices = values["prices"]
         prices = values["prices"][30:]
         dates = values["dates"][30:]
+        self.sell_tracing_price = 0
 
         for i in range(1, len(dates)):
             self.today = dates[i]
