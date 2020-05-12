@@ -251,7 +251,57 @@ class Simulation:
         self.sell_tracing_price = 0
         return True
 
+    def aroon_condition(self):
+        aroon_enabled = self.buy_conditions['aroon']['checked']
+        if not aroon_enabled:
+            return True  # Buy
+
+        up_lower = self.buy_conditions['aroon']['up_lower']
+        up_upper = self.buy_conditions['aroon']['up_upper']
+        down_lower = self.buy_conditions['aroon']['down_lower']
+        down_upper = self.buy_conditions['aroon']['down_upper']
+        aroon_compare = self.buy_conditions['aroon']['aroon_compare']
+        uptrend = self.buy_conditions['aroon']['uptrend']
+        downtrend = self.buy_conditions['aroon']['downtrend']
+
+        aroon = calculate_aroon_index(self.prices_until_today, 3)
+
+        up_condition = up_lower <= aroon['upper'][-1] and aroon['upper'][-1] <= up_upper
+        down_condition = down_lower <= aroon['lower'][-1] and aroon['lower'][-1] <= down_upper
+
+        if uptrend == "↑":
+            uptrend_condition = aroon['upper'][-1] >= aroon['upper'][-2]
+        elif uptrend == "↓":
+            uptrend_condition = aroon['upper'][-1] <= aroon['upper'][-2]
+        else:
+            uptrend_condition = True
+
+        if downtrend == "↑":
+            downtrend_condition = aroon['lower'][-1] >= aroon['lower'][-2]
+        elif downtrend == "↓":
+            downtrend_condition = aroon['lower'][-1] <= aroon['lower'][-2]
+        else:
+            downtrend_condition = True
+
+        if aroon_compare == "VE":
+            if up_condition and down_condition and uptrend_condition and downtrend_condition:
+                return True
+            else:
+                return False
+
+        elif aroon_compare == "VEYA":
+            if (up_condition and down_condition) or (uptrend_condition and downtrend_condition):
+                return True
+            else:
+                return False
+
+        return up_condition and down_condition
+
     def buy_condition(self):
+        aroon_option = self.aroon_condition()
+        if not aroon_option:
+            return False
+
         price_option = self.price_condition(self.buy_conditions)
         if not price_option:
             return False
@@ -287,6 +337,8 @@ class Simulation:
         prices = values["prices"][30:]
         dates = values["dates"][30:]
         self.sell_tracing_price = 0
+        self.buy_days = []
+        self.sell_days = []
 
         for i in range(1, len(dates)):
             self.today = dates[i]
@@ -307,6 +359,7 @@ class Simulation:
                 buy_amount = self.money / self.current_price
                 info = ""
                 self.buy(buy_amount, self.current_price, info)
+                self.buy_days.append(i)
 
             elif self.money <= 0:
                 if not self.sell_condition():
@@ -315,10 +368,13 @@ class Simulation:
                 sell_amount = self.portfolio[self.stock_name]
                 info = ""
                 self.sell(sell_amount, self.current_price, info)
+                self.sell_days.append(i)
 
         final_money = self.moneys[-1]
         print("Stock Name: %s" % self.stock_name)
         print("Final Money: %s" % final_money)
+        print("Buy Days: %s" % self.buy_days)
+        print("Sell Days: %s" % self.sell_days)
 
         return self.moneys
 
