@@ -299,7 +299,7 @@ class Simulation:
 
     def buy_condition(self):
         aroon_option = self.aroon_condition()
-        if not aroon_option:
+        if aroon_option:
             return False
 
         price_option = self.price_condition(self.buy_conditions)
