@@ -254,7 +254,7 @@ class Simulation:
     def aroon_condition(self):
         aroon_enabled = self.buy_conditions['aroon']['checked']
         if not aroon_enabled:
-            return True  # Buy
+            return False
 
         up_lower = self.buy_conditions['aroon']['up_lower']
         up_upper = self.buy_conditions['aroon']['up_upper']
