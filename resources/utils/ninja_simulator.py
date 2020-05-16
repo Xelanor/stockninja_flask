@@ -297,7 +297,34 @@ class Simulation:
 
         return up_condition and down_condition
 
+    def after_sell_condition(self):
+        after_sell_enabled = self.buy_conditions['after_sell']['checked']
+        if not after_sell_enabled:
+            return True
+
+        if len(self.transaction_log) == 0:
+            return True
+
+        after_sell_percent = self.buy_conditions['after_sell']['percent']
+        after_sell_period = self.buy_conditions['after_sell']['period']
+
+        if self.current_price < self.prices_until_today[-2]:
+            self.after_sell_values["min"] = self.current_price
+            self.after_sell_values["days"] = 0
+
+        self.after_sell_values["days"] += 1
+
+        if self.after_sell_values["days"] >= after_sell_period and \
+                self.current_price * (1 - (after_sell_percent / 100)) > self.after_sell_values["min"]:
+
+            return True
+        return False
+
     def buy_condition(self):
+        after_sell_option = self.after_sell_condition()
+        if not after_sell_option:
+            return False
+
         aroon_option = self.aroon_condition()
         if aroon_option:
             return False
@@ -339,6 +366,7 @@ class Simulation:
         self.sell_tracing_price = 0
         self.buy_days = []
         self.sell_days = []
+        self.after_sell_values = {"min": 0, "days": 0}
 
         for i in range(1, len(dates)):
             self.today = dates[i]
@@ -369,6 +397,8 @@ class Simulation:
                 info = ""
                 self.sell(sell_amount, self.current_price, info)
                 self.sell_days.append(i)
+
+                self.after_sell_values["min"] = self.current_price
 
         final_money = self.moneys[-1]
         print("Stock Name: %s" % self.stock_name)
