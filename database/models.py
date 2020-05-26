@@ -8,6 +8,7 @@ class User(db.Document):
     loginPassCode = db.IntField(min_value=1000, max_value=9999)
     loginPassCodeExpires = db.DateTimeField()
     role = db.StringField(default="member")
+    simulation = db.DictField(default={})
     createdAt = db.DateTimeField()
     updatedAt = db.DateTimeField(default=datetime.utcnow)
 

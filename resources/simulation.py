@@ -1,9 +1,10 @@
 from flask import Response, request
-from database.models import Simulation
+from database.models import Simulation, User
 from flask_restful import Resource
 from datetime import datetime, timedelta
 import json
 from mongoengine.errors import DoesNotExist
+from pprint import pprint
 
 from .utils.ninja_simulator import run
 
@@ -13,6 +14,7 @@ class SimulationResultApi(Resource):
         body = request.get_json()
         buy_conditions = body['buy']
         sell_conditions = body['sell']
+        period = body["period"]
 
         stocks = []
         if buy_conditions['stock_type'] == "Yükselenler":
@@ -26,11 +28,25 @@ class SimulationResultApi(Resource):
                 if value == True:
                     stocks.append(key)
 
-        print(stocks)
+        # print(buy_conditions)
+        # print(sell_conditions)
 
-        values = run(buy_conditions, sell_conditions, stocks)
+        values, buyable_tickers = run(
+            buy_conditions, sell_conditions, stocks, period)
 
-        return {'values': values}, 200
+        return {'values': values, 'buyable': buyable_tickers}, 200
+
+
+class SimulationSaveApi(Resource):
+    def post(self):
+        body = request.get_json()
+        buy_conditions = body['buy']
+        sell_conditions = body['sell']
+        user_id = body['user']
+
+        User.objects.get(id=user_id).update(set__simulation={"buy": buy_conditions, "sell": sell_conditions})
+
+        return {'token': str("Done")}, 200
 
 
 class AddSimulationApi(Resource):

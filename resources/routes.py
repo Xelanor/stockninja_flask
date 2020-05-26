@@ -1,10 +1,10 @@
-from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi, GetUsersNotifIdsApi
+from .auth import SignupApi, InitialLoginApi, PassLoginApi, GetUserNotifIdApi, GetUsersNotifIdsApi, GetAllUsersApi
 from .portfolio import GetAllPortfoliosApi, GetPortfoliosApi, AddPortfolioItemApi, SetPortfolioBuyTarget, SetPortfolioSellTarget, PortfolioDeleteApi, GetSinglePortfolioApi
 from .change import GetChangesApi, AddChangeItemApi
 from .ticker import GetTickersApi, GetAllTickerDetailsApi, GetAllCurrencyDetailsApi, GetSingleTickerApi, GetSingleTickerDetailsApi, AddTickerItemApi, AddTickerScrapDataApi, TickerSearchApi
 from .transaction import GetAllTransactionsApi, GetTransactionsApi, GetMixedTransactionsApi, AddTransactionItemApi, DeleteTransactionItemApi, SetInformTransactionItemApi, SellTransactionItemApi, GetTracingTransactionsApi, SetCurrentPriceTransactionItemApi, SetTracedTransactionItemApi
 from .notifications import GetNotificationsApi, AddNotificationItemApi, NotificationViewedApi, DeleteNotificationApi
-from .simulation import SimulationResultApi, AddSimulationApi
+from .simulation import SimulationResultApi, AddSimulationApi, SimulationSaveApi
 
 
 def initialize_routes(api):
@@ -13,6 +13,7 @@ def initialize_routes(api):
     api.add_resource(PassLoginApi, '/api/auth/login/<code>')
     api.add_resource(GetUserNotifIdApi, '/api/auth/user-notifid')
     api.add_resource(GetUsersNotifIdsApi, '/api/auth/notif-ids')
+    api.add_resource(GetAllUsersApi, '/api/auth/users')
 
     api.add_resource(GetAllPortfoliosApi, '/api/portfolio/all')
     api.add_resource(GetPortfoliosApi, '/api/portfolio')
@@ -54,3 +55,4 @@ def initialize_routes(api):
 
     api.add_resource(SimulationResultApi, '/api/simulation')
     api.add_resource(AddSimulationApi, '/api/simulation/add')
+    api.add_resource(SimulationSaveApi, '/api/simulation/save')

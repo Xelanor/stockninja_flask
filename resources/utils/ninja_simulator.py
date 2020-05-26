@@ -24,7 +24,7 @@ class Simulation:
         self.buy_conditions = buy_conditions
         self.sell_conditions = sell_conditions
 
-    def get_prices(self):
+    def get_prices_yearly(self):
         values = {"prices": [], "dates": []}
         df = pd.read_csv("prices.csv", index_col="Date",
                          parse_dates=True)[self.stock_name]
@@ -34,6 +34,27 @@ class Simulation:
 
         for timestamp in timestamps:
             date = epoch_to_date(int(str(timestamp)[:-9]))
+            values['dates'].append(date)
+
+        self.today = values['dates'][0]
+
+        return values
+
+    def get_prices_monthly(self):
+        values = {"prices": [], "dates": []}
+        QUERY_URL = "https://query1.finance.yahoo.com/v7/finance/chart/{}?range=32d&interval=1d&indicators=quote&includeTimestamps=true".format(
+            self.stock_name)
+
+        res = requests.get(QUERY_URL)
+        stocks_data = res.json()["chart"]["result"][0]
+
+        values['prices'] = stocks_data["indicators"]["quote"][0]["close"]
+        if values['prices'][-1] == None:
+            del values['prices'][-1]
+        timestamps = stocks_data["timestamp"]
+
+        for timestamp in timestamps:
+            date = epoch_to_date(timestamp)
             values['dates'].append(date)
 
         self.today = values['dates'][0]
@@ -358,8 +379,12 @@ class Simulation:
 
         return True
 
-    def simulation(self):
-        values = self.get_prices()
+    def simulation(self, period):
+        if period == "yearly":
+            values = self.get_prices_yearly()
+        elif period == "monthly":
+            values = self.get_prices_monthly()
+
         calculation_prices = values["prices"]
         prices = values["prices"][30:]
         dates = values["dates"][30:]
@@ -406,17 +431,23 @@ class Simulation:
         print("Buy Days: %s" % self.buy_days)
         print("Sell Days: %s" % self.sell_days)
 
-        return self.moneys
+        return self.moneys, self.buy_days
 
 
-def run(buy_conditions, sell_conditions, stocks):
+def run(buy_conditions, sell_conditions, stocks, period):
     all_ticker_values = []
+    buyable_tickers = []
     for ticker in stocks:
         sim = Simulation(ticker, 10000, buy_conditions, sell_conditions)
-        values = sim.simulation()
+        values, buy_days = sim.simulation(period)
         all_ticker_values.append(values)
 
-    return [sum(x) for x in zip(*all_ticker_values)]
+        if len(buy_days) >= 1:
+            buyable_tickers.append(ticker)
+
+    values = [sum(x) for x in zip(*all_ticker_values)]
+
+    return values, buyable_tickers
 
 # df = pd.DataFrame([sum(x) for x in zip(*all_ticker_values)])
 # plt.plot(df)
