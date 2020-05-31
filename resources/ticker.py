@@ -92,16 +92,16 @@ class TickerSearchApi(Resource):
 
         rsi_upper = body['rsi']['upper']
         rsi_lower = body['rsi']['lower']
-        ninja_upper = body['ninja']['upper']
-        ninja_lower = body['ninja']['lower']
-        ninja_s_upper = body['ninja_s']['upper']
-        ninja_s_lower = body['ninja_s']['lower']
+        ninja_upper = body['ninja']['upper'] / 100
+        ninja_lower = body['ninja']['lower'] / 100
+        ninja_s_upper = body['ninja_s']['upper'] / 100
+        ninja_s_lower = body['ninja_s']['lower'] / 100
         pd_dd_upper = body['pd_dd']['upper']
         pd_dd_lower = body['pd_dd']['lower']
         fk_upper = body['fk']['upper']
         fk_lower = body['fk']['lower']
 
-        Tickers = Ticker.objects(rsi__lte=rsi_upper, rsi__gte=rsi_lower, ninja__lte=ninja_upper, ninja__gte=ninja_lower, ninja_s__lte=ninja_s_upper,
-                                 ninja_s__gte=ninja_s_lower, pd_dd__lte=pd_dd_upper, pd_dd__gte=pd_dd_lower, fk__lte=fk_upper, fk__gte=fk_lower).to_json()
+        Tickers = Ticker.objects(rsi__lte=rsi_upper, rsi__gte=rsi_lower, ninja__lte=ninja_upper, ninja__gte=ninja_lower, ninja_s__lte=ninja_s_upper, ninja_s__gte=ninja_s_lower,
+                                 pd_dd__lte=pd_dd_upper, pd_dd__gte=pd_dd_lower, fk__lte=fk_upper, fk__gte=fk_lower).to_json()
 
         return Response(Tickers, mimetype="application/json", status=200)
