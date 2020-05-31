@@ -54,6 +54,7 @@ class Ticker(db.Document):
     name = db.StringField(required=True)
     rsi = db.FloatField()
     ninja = db.FloatField()
+    ninja_s = db.FloatField()
     fk = db.FloatField()
     pd_dd = db.FloatField()
     createdAt = db.DateTimeField()

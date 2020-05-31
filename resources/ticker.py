@@ -64,9 +64,10 @@ class AddTickerItemApi(Resource):
         name = body['name']
         rsi = body['rsi']
         ninja = body['ninja']
+        ninja_s = body['ninja_s']
 
-        Ticker.objects(name=name).modify(set__name=name, set__rsi=rsi,
-                                         set__ninja=ninja, set__updatedAt=datetime.now, upsert=True, new=True)
+        Ticker.objects(name=name).modify(set__name=name, set__rsi=rsi, set__ninja=ninja,
+                                         set__ninja_s=ninja_s, set__updatedAt=datetime.now, upsert=True, new=True)
 
         return {'token': str("Done")}, 200
 
@@ -89,11 +90,18 @@ class TickerSearchApi(Resource):
     def post(self):
         body = request.get_json()
 
-        rsi = body['rsi']
-        ninja = body['ninja']
-        pd_dd = body['pd_dd']
+        rsi_upper = body['rsi']['upper']
+        rsi_lower = body['rsi']['lower']
+        ninja_upper = body['ninja']['upper']
+        ninja_lower = body['ninja']['lower']
+        ninja_s_upper = body['ninja_s']['upper']
+        ninja_s_lower = body['ninja_s']['lower']
+        pd_dd_upper = body['pd_dd']['upper']
+        pd_dd_lower = body['pd_dd']['lower']
+        fk_upper = body['fk']['upper']
+        fk_lower = body['fk']['lower']
 
-        Tickers = Ticker.objects(
-            rsi__lte=rsi, ninja__lte=ninja, pd_dd__lte=pd_dd).to_json()
+        Tickers = Ticker.objects(rsi__lte=rsi_upper, rsi__gte=rsi_lower, ninja__lte=ninja_upper, ninja__gte=ninja_lower, ninja_s__lte=ninja_s_upper,
+                                 ninja_s__gte=ninja_s_lower, pd_dd__lte=pd_dd_upper, pd_dd__gte=pd_dd_lower, fk__lte=fk_upper, fk__gte=fk_lower).to_json()
 
         return Response(Tickers, mimetype="application/json", status=200)
