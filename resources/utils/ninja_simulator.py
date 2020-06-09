@@ -135,18 +135,22 @@ class Simulation:
 
         return True
 
-    def calculate_triple_index(self, historic_data, data_scope, short, long_):
+    def calculate_triple_index(self, historic_data, data_scope, short, medium, long_):
         short = int(short)
         long_ = int(long_)
         short_data = historic_data[-1 * (data_scope + short):]
+        medium_data = historic_data[-1 * (data_scope + medium):]
         long_data = historic_data[-1 * (data_scope + long_):]
 
-        triple_index_values = {"short_list": [], "long_list": []}
+        triple_index_values = {"short_list": [],
+                               "medium_list": [], "long_list": []}
 
         for i in range(0, data_scope):
             try:
                 triple_index_values["short_list"].append(
                     mean(short_data[i:i+short]))
+                triple_index_values["medium_list"].append(
+                    mean(medium_data[i:i+medium]))
                 triple_index_values["long_list"].append(
                     mean(long_data[i:i+long_]))
             except Exception as ex:
@@ -155,64 +159,69 @@ class Simulation:
 
         return triple_index_values
 
-    def triple_condition(self):
-        triple_enabled = self.buy_conditions['triple']['checked']
+    def triple_condition(self, conditions):
+        triple_enabled = conditions['triple']['checked']
         if not triple_enabled:
             return True  # Buy
 
-        triple_short = self.buy_conditions['triple']['short']
-        triple_long = self.buy_conditions['triple']['long']
-        triple_first = self.buy_conditions['triple']['first']
-        triple_second = self.buy_conditions['triple']['second']
-        triple_third = self.buy_conditions['triple']['third']
-        triple_first_compare = self.buy_conditions['triple']['first_compare']
-        triple_first_perc = self.buy_conditions['triple']['first_percentage']
-        triple_second_compare = self.buy_conditions['triple']['second_compare']
-        triple_second_perc = self.buy_conditions['triple']['second_percentage']
+        triple_short = conditions['triple']['short']
+        triple_medium = conditions['triple']['medium']
+        triple_long = conditions['triple']['long']
+        triple_price_value = conditions['triple']['price']
+        triple_short_value = conditions['triple']['short_value']
+        triple_medium_value = conditions['triple']['medium_value']
+        triple_long_value = conditions['triple']['long_value']
+        triple_price_compare = conditions['triple']['price_compare']
+        triple_short_compare = conditions['triple']['short_compare']
+        triple_medium_compare = conditions['triple']['medium_compare']
+        triple_long_compare = conditions['triple']['long_compare']
 
         values = self.calculate_triple_index(
-            self.prices_until_today, 2, triple_short, triple_long)
+            self.prices_until_today, 3, triple_short, triple_medium, triple_long)
 
         price = self.current_price
         short = values["short_list"][-1]
+        medium = values["medium_list"][-1]
         long_ = values["long_list"][-1]
 
-        if triple_first == "F":
-            a_value = price
-        elif triple_first == "K":
-            a_value = short
-        elif triple_first == "U":
-            a_value = long_
+        triple_sorting_list = [0, 0, 0, 0]
 
-        if triple_second == "F":
-            b_value = price
-        elif triple_second == "K":
-            b_value = short
-        elif triple_second == "U":
-            b_value = long_
+        triple_sorting_list[int(triple_price_value) - 1] = price
+        triple_sorting_list[int(triple_short_value) - 1] = short
+        triple_sorting_list[int(triple_medium_value) - 1] = medium
+        triple_sorting_list[int(triple_long_value) - 1] = long_
 
-        if triple_third == "F":
-            c_value = price
-        elif triple_third == "K":
-            c_value = short
-        elif triple_third == "U":
-            c_value = long_
+        if not (triple_sorting_list[3] > triple_sorting_list[2] and
+                triple_sorting_list[2] > triple_sorting_list[1] and
+                triple_sorting_list[1] > triple_sorting_list[0]):
+            return False
 
-        rate_A = (a_value - b_value) / b_value * 100
-        rate_B = (b_value - c_value) / c_value * 100
-
-        if triple_first_compare == ">":
-            if not (rate_A > 0 and rate_A < triple_first_perc):
+        if triple_price_compare == ">":
+            if not (price > self.prices_until_today[-2]):
                 return False
-        elif triple_first_compare == "<":
-            if not (rate_A * -1 > 0 and rate_A * -1 < triple_first_perc):
+        elif triple_price_compare == "<":
+            if not (price < self.prices_until_today[-2]):
                 return False
 
-        if triple_second_compare == ">":
-            if not (rate_B > 0 and rate_B < triple_second_perc):
+        if triple_short_compare == ">":
+            if not (short > values["short_list"][-2]):
                 return False
-        elif triple_second_compare == "<":
-            if not (rate_B * -1 > 0 and rate_B * -1 < triple_second_perc):
+        elif triple_short_compare == "<":
+            if not (short < values["short_list"][-2]):
+                return False
+
+        if triple_medium_compare == ">":
+            if not (medium > values["medium_list"][-2]):
+                return False
+        elif triple_medium_compare == "<":
+            if not (medium < values["medium_list"][-2]):
+                return False
+
+        if triple_long_compare == ">":
+            if not (long_ > values["long_list"][-2]):
+                return False
+        elif triple_long_compare == "<":
+            if not (long_ < values["long_list"][-2]):
                 return False
 
         return True
@@ -354,7 +363,7 @@ class Simulation:
         if not price_option:
             return False
 
-        triple_option = self.triple_condition()
+        triple_option = self.triple_condition(self.buy_conditions)
         if not triple_option:
             return False
 
@@ -367,6 +376,10 @@ class Simulation:
     def sell_condition(self):
         price_option = self.price_condition(self.sell_conditions)
         if not price_option:
+            return False
+
+        triple_option = self.triple_condition(self.sell_conditions)
+        if not triple_option:
             return False
 
         rsi_option = self.rsi_condition(self.sell_conditions)
