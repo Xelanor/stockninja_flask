@@ -164,13 +164,13 @@ class Simulation:
         if not triple_enabled:
             return True  # Buy
 
-        triple_short = conditions['triple']['short']
-        triple_medium = conditions['triple']['medium']
-        triple_long = conditions['triple']['long']
-        triple_price_value = conditions['triple']['price']
-        triple_short_value = conditions['triple']['short_value']
-        triple_medium_value = conditions['triple']['medium_value']
-        triple_long_value = conditions['triple']['long_value']
+        triple_short = int(conditions['triple']['short'])
+        triple_medium = int(conditions['triple']['medium'])
+        triple_long = int(conditions['triple']['long'])
+        triple_price_value = int(conditions['triple']['price'])
+        triple_short_value = int(conditions['triple']['short_value'])
+        triple_medium_value = int(conditions['triple']['medium_value'])
+        triple_long_value = int(conditions['triple']['long_value'])
         triple_price_compare = conditions['triple']['price_compare']
         triple_short_compare = conditions['triple']['short_compare']
         triple_medium_compare = conditions['triple']['medium_compare']
@@ -186,10 +186,10 @@ class Simulation:
 
         triple_sorting_list = [0, 0, 0, 0]
 
-        triple_sorting_list[int(triple_price_value) - 1] = price
-        triple_sorting_list[int(triple_short_value) - 1] = short
-        triple_sorting_list[int(triple_medium_value) - 1] = medium
-        triple_sorting_list[int(triple_long_value) - 1] = long_
+        triple_sorting_list[triple_price_value - 1] = price
+        triple_sorting_list[triple_short_value - 1] = short
+        triple_sorting_list[triple_medium_value - 1] = medium
+        triple_sorting_list[triple_long_value - 1] = long_
 
         if not (triple_sorting_list[3] > triple_sorting_list[2] and
                 triple_sorting_list[2] > triple_sorting_list[1] and
