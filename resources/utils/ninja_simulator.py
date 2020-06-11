@@ -444,7 +444,7 @@ class Simulation:
         print("Buy Days: %s" % self.buy_days)
         print("Sell Days: %s" % self.sell_days)
 
-        return self.moneys, self.buy_days
+        return self.moneys, self.buy_days, self.sell_days
 
 
 def run(buy_conditions, sell_conditions, stocks, period):
@@ -452,7 +452,7 @@ def run(buy_conditions, sell_conditions, stocks, period):
     buyable_tickers = []
     for ticker in stocks:
         sim = Simulation(ticker, 10000, buy_conditions, sell_conditions)
-        values, buy_days = sim.simulation(period)
+        values, buy_days, sell_days = sim.simulation(period)
         all_ticker_values.append(values)
 
         if len(buy_days) >= 1:
@@ -460,7 +460,7 @@ def run(buy_conditions, sell_conditions, stocks, period):
 
     values = [sum(x) for x in zip(*all_ticker_values)]
 
-    return values, buyable_tickers
+    return values, buyable_tickers, buy_days, sell_days
 
 # df = pd.DataFrame([sum(x) for x in zip(*all_ticker_values)])
 # plt.plot(df)

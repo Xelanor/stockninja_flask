@@ -31,10 +31,10 @@ class SimulationResultApi(Resource):
         # print(buy_conditions)
         # print(sell_conditions)
 
-        values, buyable_tickers = run(
+        values, buyable_tickers, buy_days, sell_days = run(
             buy_conditions, sell_conditions, stocks, period)
 
-        return {'values': values, 'buyable': buyable_tickers}, 200
+        return {'values': values, 'buyable': buyable_tickers, 'buy_days': buy_days, 'sell_days': sell_days}, 200
 
 
 class SimulationSaveApi(Resource):
@@ -44,7 +44,8 @@ class SimulationSaveApi(Resource):
         sell_conditions = body['sell']
         user_id = body['user']
 
-        User.objects.get(id=user_id).update(set__simulation={"buy": buy_conditions, "sell": sell_conditions})
+        User.objects.get(id=user_id).update(set__simulation={
+            "buy": buy_conditions, "sell": sell_conditions})
 
         return {'token': str("Done")}, 200
 
