@@ -321,6 +321,68 @@ def calculate_aroon_index(historic_data, data_scope):
     return aroon_index_values
 
 
+def calculate_macd_index(historic_data, data_scope):
+    """
+    Calculation of MACD index
+    """
+    macd_index_values = {"macd": [], "signal": [], "histogram": []}
+    historic_data = historic_data[-1 * (data_scope + 25):]
+
+    twelve_day_ema = []
+    twentysix_day_ema = []
+
+    for i in range(len(historic_data)):
+        if i < 11:
+            twelve_day_ema.append(0)
+            twentysix_day_ema.append(0)
+
+        elif i == 11:
+            twentysix_day_ema.append(0)
+            twelve_day_ema.append(mean(historic_data[:12]))
+
+        elif i < 25:
+            twentysix_day_ema.append(0)
+            ema = (historic_data[i] - twelve_day_ema[-1]
+                   ) * 0.1538 + twelve_day_ema[-1]
+            twelve_day_ema.append(ema)
+
+        if i == 25:
+            twentysix_day_ema.append(mean(historic_data[:26]))
+            ema = (historic_data[i] - twelve_day_ema[-1]
+                   ) * 0.1538 + twelve_day_ema[-1]
+            twelve_day_ema.append(ema)
+
+        if i > 25:
+            twelve_ema = (historic_data[i] - twelve_day_ema[-1]
+                          ) * 0.1538 + twelve_day_ema[-1]
+            twelve_day_ema.append(twelve_ema)
+            twentysix_ema = (historic_data[i] - twentysix_day_ema[-1]
+                             ) * 0.074 + twentysix_day_ema[-1]
+            twentysix_day_ema.append(twentysix_ema)
+
+    for i in range(25, len(historic_data)):
+        macd = twelve_day_ema[i] - twentysix_day_ema[i]
+        macd_index_values["macd"].append(macd)
+
+    for i in range(len(macd_index_values["macd"])):
+        if i < 8:
+            macd_index_values["signal"].append(None)
+            macd_index_values["histogram"].append(None)
+        elif i == 8:
+            macd_index_values["signal"].append(
+                mean(macd_index_values["macd"][:9]))
+            macd_index_values["histogram"].append(
+                macd_index_values["macd"][i] - macd_index_values["signal"][-1])
+        else:
+            signal = (macd_index_values["macd"][i] - macd_index_values["signal"][-1]
+                      ) * 0.2 + macd_index_values["signal"][-1]
+            macd_index_values["signal"].append(signal)
+            macd_index_values["histogram"].append(
+                macd_index_values["macd"][i] - macd_index_values["signal"][-1])
+
+    return macd_index_values
+
+
 def get_prices(stock_names):
     prices = {}
 

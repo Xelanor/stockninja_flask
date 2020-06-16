@@ -52,6 +52,7 @@ class StockDetails:
             "closes": self.historic_data,
             "williams": self.williams_values,
             "aroon": self.aroon_values,
+            "macd": self.macd_values,
             # "news": self.all_news,
             "fk": special_data['fk'] if 'fk' in special_data else 0,
             "pd_dd": special_data['pd_dd'] if 'pd_dd' in special_data else 0,
@@ -96,6 +97,8 @@ class StockDetails:
         self.williams_values = calculate_williams_index(
             self.historic_data, data_scope)
         self.aroon_values = calculate_aroon_index(
+            self.historic_data, data_scope)
+        self.macd_values = calculate_macd_index(
             self.historic_data, data_scope)
         self.stock_details = self.combine_data_target()
 
