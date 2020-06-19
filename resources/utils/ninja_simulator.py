@@ -106,11 +106,13 @@ class Simulation:
             return True  # Buy
 
         price_day = conditions['price']['priceDay']
-        price_percentage = conditions['price']['pricePercentage']
+        price_percentage_lower = conditions['price']['pricePercentageLower']
+        price_percentage_upper = conditions['price']['pricePercentageUpper']
         price_condition = conditions['price']['priceCondition']
 
         if price_condition == "Yüksek":
-            if self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (price_percentage + 100) / 100:
+            if not ((self.current_price > self.prices_until_today[-1 * (price_day + 1)] * (price_percentage_lower + 100) / 100)
+                    and (self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (price_percentage_upper + 100) / 100)):
                 return False  # Dont buy
         elif price_condition == "Sıralı Düşük":
             # If state positive increasing else decreasing
@@ -120,8 +122,9 @@ class Simulation:
                 return False
             if days < price_day:
                 return False
-            if self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (price_percentage + 100) / 100:
-                return False
+            if not ((self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (-1 * price_percentage_lower + 100) / 100)
+                    and (self.current_price > self.prices_until_today[-1 * (price_day + 1)] * (-1 * price_percentage_upper + 100) / 100)):
+                return False  # Dont buy
         elif price_condition == "Sıralı Yüksek":
             # If state positive increasing else decreasing
             days, state = self.calculate_consecutive_days(
@@ -130,10 +133,12 @@ class Simulation:
                 return False
             if days < price_day:
                 return False
-            if self.current_price > self.prices_until_today[-1 * (price_day + 1)] * (price_percentage + 100) / 100:
+            if not ((self.current_price > self.prices_until_today[-1 * (price_day + 1)] * (price_percentage_lower + 100) / 100)
+                    and (self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (price_percentage_upper + 100) / 100)):
                 return False  # Dont buy
         elif price_condition == "Düşük":
-            if self.current_price > self.prices_until_today[-1 * (price_day + 1)] * (price_percentage + 100) / 100:
+            if not ((self.current_price < self.prices_until_today[-1 * (price_day + 1)] * (-1 * price_percentage_lower + 100) / 100)
+                    and (self.current_price > self.prices_until_today[-1 * (price_day + 1)] * (-1 * price_percentage_upper + 100) / 100)):
                 return False  # Dont buy
 
         return True
@@ -196,8 +201,6 @@ class Simulation:
         triple_sorting_list[triple_short_value - 1] = short
         triple_sorting_list[triple_medium_value - 1] = medium
         triple_sorting_list[triple_long_value - 1] = long_
-
-        print(price, short, medium, long_)
 
         if not (triple_sorting_list[3] > triple_sorting_list[2] and
                 triple_sorting_list[2] > triple_sorting_list[1] and
