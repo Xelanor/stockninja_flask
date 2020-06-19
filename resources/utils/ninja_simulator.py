@@ -98,6 +98,9 @@ class Simulation:
         return days, first_event
 
     def price_condition(self, conditions):
+        if not 'price' in conditions:
+            return True
+
         price_enabled = conditions['price']['checked']
         if not price_enabled:
             return True  # Buy
@@ -160,6 +163,9 @@ class Simulation:
         return triple_index_values
 
     def triple_condition(self, conditions):
+        if not 'triple' in conditions:
+            return True
+
         triple_enabled = conditions['triple']['checked']
         if not triple_enabled:
             return True  # Buy
@@ -190,6 +196,8 @@ class Simulation:
         triple_sorting_list[triple_short_value - 1] = short
         triple_sorting_list[triple_medium_value - 1] = medium
         triple_sorting_list[triple_long_value - 1] = long_
+
+        print(price, short, medium, long_)
 
         if not (triple_sorting_list[3] > triple_sorting_list[2] and
                 triple_sorting_list[2] > triple_sorting_list[1] and
@@ -227,6 +235,9 @@ class Simulation:
         return True
 
     def rsi_condition(self, conditions):
+        if not 'rsi' in conditions:
+            return True
+
         rsi_enabled = conditions['rsi']['checked']
         if not rsi_enabled:
             return True  # Buy
@@ -266,6 +277,9 @@ class Simulation:
         return True
 
     def sell_trace_condition(self):
+        if not 'trace' in self.sell_conditions:
+            return True
+
         trace_enabled = self.sell_conditions['trace']['checked']
         if not trace_enabled:
             return True  # Sell
@@ -282,6 +296,9 @@ class Simulation:
         return True
 
     def aroon_condition(self):
+        if not 'aroon' in self.buy_conditions:
+            return True
+
         aroon_enabled = self.buy_conditions['aroon']['checked']
         if not aroon_enabled:
             return False
@@ -328,6 +345,9 @@ class Simulation:
         return up_condition and down_condition
 
     def after_sell_condition(self):
+        if not 'after_sell' in self.buy_conditions:
+            return True
+
         after_sell_enabled = self.buy_conditions['after_sell']['checked']
         if not after_sell_enabled:
             return True
