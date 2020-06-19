@@ -248,8 +248,8 @@ class Simulation:
         rsi_first = conditions['rsi']['first_compare']
         rsi_second = conditions['rsi']['second_compare']
         rsi_third = conditions['rsi']['third_compare']
-        rsi_value = conditions['rsi']['rsi_value']
-        rsi_compare = conditions['rsi']['rsi_compare']
+        rsi_value_lower = conditions['rsi']['rsi_value_lower']
+        rsi_value_upper = conditions['rsi']['rsi_value_upper']
 
         if rsi_first == ">":
             if not (self.rsi_values[-1] > self.rsi_values[-2]):
@@ -270,12 +270,8 @@ class Simulation:
             if not (self.rsi_values[-3] < self.rsi_values[-4]):
                 return False
 
-        if rsi_compare == ">":
-            if not (self.rsi_values[-1] > rsi_value):
-                return False
-        elif rsi_compare == "<":
-            if not (self.rsi_values[-1] < rsi_value):
-                return False
+        if not (self.rsi_values[-1] >= rsi_value_lower and self.rsi_values[-1] <= rsi_value_upper):
+            return False
 
         return True
 
