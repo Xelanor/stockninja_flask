@@ -11,7 +11,7 @@ class GetNotificationsApi(Resource):
         body = request.get_json()
 
         Notifications = Notification.objects(
-            receiver=body['receiver']).order_by('-createdAt').to_json()
+            receiver=body['receiver'], createdAt__gte=datetime.now() - timedelta(days=15)).order_by('-createdAt').to_json()
 
         return Response(Notifications, mimetype="application/json", status=200)
 
