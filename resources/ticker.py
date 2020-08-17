@@ -65,9 +65,16 @@ class AddTickerItemApi(Resource):
         rsi = body['rsi']
         ninja = body['ninja']
         ninja_s = body['ninja_s']
+        short_triple = body['short_triple']
+        medium_triple = body['medium_triple']
+        long_triple = body['long_triple']
+        price = body['price']
+        macd = body['macd']
 
         Ticker.objects(name=name).modify(set__name=name, set__rsi=rsi, set__ninja=ninja,
-                                         set__ninja_s=ninja_s, set__updatedAt=datetime.now, upsert=True, new=True)
+                                         set__ninja_s=ninja_s, set__short_triple=short_triple,
+                                         set__medium_triple=medium_triple, set__long_triple=long_triple,
+                                         set__price=price, set__macd=macd, set__updatedAt=datetime.now, upsert=True, new=True)
 
         return {'token': str("Done")}, 200
 

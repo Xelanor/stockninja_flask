@@ -49,6 +49,11 @@ class Simulation:
         stocks_data = res.json()["chart"]["result"][0]
 
         values['prices'] = stocks_data["indicators"]["quote"][0]["close"]
+
+        for i in range(len(values['prices'])):  # Handle null values
+            if values['prices'][i] == None:
+                values['prices'][i] = values['prices'][i-1]
+
         if values['prices'][-1] == None:
             del values['prices'][-1]
         timestamps = stocks_data["timestamp"]

@@ -57,6 +57,11 @@ class Ticker(db.Document):
     ninja_s = db.FloatField()
     fk = db.FloatField()
     pd_dd = db.FloatField()
+    short_triple = db.FloatField()
+    medium_triple = db.FloatField()
+    long_triple = db.FloatField()
+    price = db.FloatField()
+    macd = db.FloatField()
     createdAt = db.DateTimeField()
     updatedAt = db.DateTimeField(default=datetime.utcnow)
 
