@@ -14,6 +14,13 @@ dnspython = "*"
 flask-jwt-extended = "*"
 requests = "*"
 gunicorn = "*"
+pandas = "*"
+numpy = "*"
+matplotlib = "*"
+urllib3 = "*"
+pymongo = "*"
+mongoengine = "*"
+flask-mongoengine = "*"
 
 [requires]
 python_version = "3.8"
