@@ -31,7 +31,7 @@ class Simulation:
 
     def get_prices_old(self):
         values = {"prices": [], "dates": []}
-        QUERY_URL = "https://query1.finance.yahoo.com/v7/finance/chart/{}?range=261d&interval={}d&indicators=quote&includeTimestamps=true"
+        QUERY_URL = "https://query1.finance.yahoo.com/v7/finance/chart/{}?range=40d&interval={}d&indicators=quote&includeTimestamps=true"
 
         res = requests.get(QUERY_URL.format(self.stock_name, 1)).json()
         prices = res['chart']["result"][0]['indicators']["quote"][0]["close"]
@@ -83,13 +83,13 @@ class Simulation:
         self.transaction(amount, price, "sell", info)
 
     def calculate_average(self, historic_data, data_scope):
-        first_data = historic_data[-1 * (data_scope + 21):]
+        first_data = historic_data[-1 * (data_scope + 10):]
 
         average_list = []
 
         for i in range(0, data_scope):
             try:
-                average_list.append(round(mean(first_data[i:i+21]), 2))
+                average_list.append(round(mean(first_data[i:i+10]), 2))
             except Exception as ex:
                 print(ex)
                 pass
@@ -113,7 +113,7 @@ class Simulation:
             result.append(avg_first + avg_second)
 
         return result
-    
+
     def forecast_next(self, prices, averages, data_scope):
         xy = [x * y for x, y in zip(prices, averages)]
         x2 = [x * x for x in averages]
@@ -151,7 +151,9 @@ class Simulation:
         _prices = []
         _forecasts = []
         _arith = []
-        values = self.get_prices()
+        values = self.get_prices_old()
+        values['prices'] = values['prices'][-31:]
+        values['dates'] = values['dates'][-31:]
         for i in range(len(values["prices"][30:])):
             self.today = values["dates"][i + 30]
             price = round(values["prices"][i + 30], 2)
@@ -167,7 +169,7 @@ class Simulation:
             rsi = calculate_rsi_index(prices_until_tomorrow, 3)
             williams = calculate_williams_index(prices_until_tomorrow, 3)
             triple = calculate_triple_index(
-                prices_until_tomorrow, 3)["third_list"]
+                prices_until_tomorrow, 4)["third_list"]
             aroon = calculate_aroon_index(prices_until_tomorrow, 3)
             arith_avg = self.calculate_average(prices_until_today, 11)
             avg_alternative = self.calculate_average_alternative(
@@ -176,7 +178,7 @@ class Simulation:
             _forecasts.append(forecast)
             _prices.append(price)
             _arith.append(arith_avg[-1])
-            
+
             if self.money <= 0 and price > buy_tracing_price:
                 buy_tracing_price = price
 
@@ -219,21 +221,45 @@ class Simulation:
 
                 # if ninja[-2] < -0.04:
                 #     continue
-                
-                if price < prev_price:
+
+                # if price < prev_price:
+                #     continue
+
+                # if ninja[-1] < ninja[-2]:
+                #     continue
+
+                # if ninja[-2] < ninja[-3]:
+                #     continue
+
+                # # if ninja[-2] > 0.01:
+                # #     continue
+
+                # if ninja[-1] < -0.04:
+                #     continue
+
+                # # if -1 * (arith_avg[-1] - price) / arith_avg[-1] < -0.04:
+                # #     continue
+
+                # if arith_avg[-1] > arith_avg[-2]:
+                #     continue
+
+                condition1 = ninja[-2] < 0.04
+                condition2 = ninja[-2] > ninja[-3]
+
+                if not condition1 and not condition2:
                     continue
 
-                if ninja[-1] < ninja[-2]:
-                    continue
+                if condition1:
+                    if price < triple[-3]:
+                        continue
+                    if triple[-3] < triple[-4]:
+                        continue
 
-                if ninja[-2] > 0.01:
-                    continue
-
-                if -1 * (arith_avg[-1] - price) / arith_avg[-1] < -0.04:
-                    continue
-
-                if arith_avg[-1] < arith_avg[-5]:
-                    continue
+                if condition2:
+                    if ninja[-2] > ninja[-3]:
+                        continue
+                    if ninja[-1] < ninja[-2]:
+                        continue
 
                 today = arith_avg[-1]
                 x_th_day = arith_avg[-1 * arith_avg_period]
@@ -252,7 +278,19 @@ class Simulation:
 
             elif self.money <= 0:  # SELL
 
-                if price > buy_tracing_price * buy_tracing_rate:
+                # if price > prev_price:
+                #     continue
+
+                # if triple[-2] > triple[-3]:
+                #     continue
+
+                # if ninja[-1] < -0.04:
+                #     continue
+
+                condition_1 = price < buy_tracing_price * 0.998
+                condition_2 = arith_avg[-1] < arith_avg[-2] and arith_avg[-2] < arith_avg[-3] and arith_avg[-3] < arith_avg[-4]
+
+                if not condition_2 or not condition_1:
                     continue
 
                 today = arith_avg[-1]
@@ -290,15 +328,20 @@ class Simulation:
         # plt.plot(df2, color='blue')
         # plt.plot(df3, color='red')
         # plt.show()
-        return self.values
+        return self.values, buy_days, self.stock_name
 
 
+a = []
 f = open("stock.txt", "w")
 all_values = []
-for ticker in ["TUPRS.IS"]:
+for ticker in valuable_tickers:
     sim = Simulation(ticker, 10000)
-    values = sim.simulation()
+    values, days, name = sim.simulation()
     all_values.append(values)
+    if len(days) == 1:
+        a.append(name)
+
+print(a)
 
 f.close()
 df = pd.DataFrame([sum(x) for x in zip(*all_values)])

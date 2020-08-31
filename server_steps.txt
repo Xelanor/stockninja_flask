@@ -1,0 +1,7 @@
+cd /home/ubuntu/stockninja_flask
+git pull
+sudo systemctl status supervisor
+sudo service supervisor stop
+sudo pkill -HUP gunicorn
+sudo service supervisor start
+sudo systemctl status supervisor
